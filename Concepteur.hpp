@@ -2,6 +2,7 @@
 #include <string>
 #include "ListeJeux.hpp"
 
+//consignes dit que ils veulent attributs publiques
 struct Concepteur
 {
 	std::string nom;

@@ -8,6 +8,7 @@
 #include "bibliotheque_cours.hpp"
 #include "verification_allocation.hpp"
 #include "ListeDeveloppeurs.hpp"
+#include "Liste.hpp"
 #include "debogage_memoire.hpp"  //NOTE: Incompatible avec le "placement new", ne pas utiliser cette entête si vous utilisez ce type de "new" dans les lignes qui suivent cette inclusion.
 
 using namespace std;
@@ -290,34 +291,14 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 	
 	//TODO: Faire les appels à toutes vos fonctions/méthodes pour voir qu'elles fonctionnent et avoir 0% de lignes non exécutées dans le programme (aucune ligne rouge dans la couverture de code; c'est normal que les lignes de "new" et "delete" soient jaunes).  Vous avez aussi le droit d'effacer les lignes du programmes qui ne sont pas exécutée, si finalement vous pensez qu'elle ne sont pas utiles.
 
-	ListeDeveloppeurs ld;
-	// Création des développeurs externes à la liste des développeur
-	Developpeur* nintendo = new Developpeur("Nintendo");
-	Developpeur* square = new Developpeur("Square");
-	Developpeur* konami = new Developpeur("Konami");
-	Developpeur* bidon = new Developpeur("Bidon");
-	// On ajoute les jeux respectifs de ListeJeux développé par le développeur
-	nintendo->ajouterJeux(lj);
-	square->ajouterJeux(lj);
-	konami->ajouterJeux(lj);
-	// On ajoute les développeurs à la ListeDeveloppeur car ils sont externes
-	ld.ajouter(nintendo);
-	ld.ajouter(square);
-	ld.ajouter(konami);
-	ld.ajouter(bidon);
-	// On affiche la liste des développeurs, leurs jeux sont aussi affichés; Bidon ne devrait avoir aucun jeu.
-	ld.afficher();
 
-	cout << endl << "On retire " << bidon->getNom() << endl;
-	ld.retirer(bidon); // Retire sans détruire.
-	ld.afficher();
-	cout << "Il existe encore: " << bidon->getNom() << endl;
-
-	delete bidon;
-	delete konami;
-	delete square;
-	delete nintendo;
 
 	//TODO: Détruire tout avant de terminer le programme.  Devrait afficher "Aucune fuite detectee." a la sortie du programme; il affichera "Fuite detectee:" avec la liste des blocs, s'il manque des delete.
 	detruireListeJeux(lj);
+
+	// Kamil: section de tests pour Liste.hpp
+	//Liste<int> listeInt;
+	//auto ptrInt = make_unique<int>(1);
+	//listeInt.ajouter(ptrInt);
+
 }
