@@ -176,9 +176,11 @@ ListeJeux creerListeJeux(const string& nomFichier)
 	ifstream fichier(nomFichier, ios::binary);
 	fichier.exceptions(ios::failbit);
 	size_t nElements = lireUintTailleVariable(fichier);
+	//Liste<Jeu> listeJeux = {}; 
 	ListeJeux listeJeux = {};
 	for([[maybe_unused]] size_t n : iter::range(nElements))
 	{
+		//listeJeux.ajouter(lireJeu(fichier, listeJeux));
 		ajouterJeu(listeJeux, lireJeu(fichier, listeJeux)); //TODO: Ajouter le jeu à la ListeJeux.
 	}
 

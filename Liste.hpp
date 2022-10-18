@@ -29,13 +29,11 @@ public:
 		capacite_ = nouvelleCapacite;
 	};
 
-
 	void ajouter(shared_ptr<T> ptrT) {
 		if (nElements_ == capacite_)
 			changerCapacite(max(size_t(1), capacite_ * 2));
 		elements_[nElements_++] = ptrT;
 	};
-
 
 	void retirer(const shared_ptr<T> aRetirer) {
 		for (shared_ptr<T>& a : enSpan()) {
@@ -47,11 +45,9 @@ public:
 		}
 	};
 
-	
 	span<T*> enSpan() const { return span(elements_, nElements_); };
 
-
-
+	shared_ptr<T> operator[] (const int index) const { return elements_[index]; }
 
 private:
 	std::size_t nElements_ = 0, capacite_ = 0;
