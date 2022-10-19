@@ -279,28 +279,52 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 
 	//int* fuite = new int;  // Pour vérifier que la détection de fuites fonctionne; un message devrait dire qu'il y a une fuite à cette ligne.
 
-	ListeJeux lj = creerListeJeux("jeux.bin"); //TODO: Appeler correctement votre fonction de création de la liste de jeux.
+	//ListeJeux lj = creerListeJeux("jeux.bin"); //TODO: Appeler correctement votre fonction de création de la liste de jeux.
 
 	static const string ligneSeparation = "\n\033[35m════════════════════════════════════════\033[0m\n";
 	cout << ligneSeparation << endl;
 	cout << "Premier jeu de la liste :" << endl;
 	//TODO: Afficher le premier jeu de la liste (en utilisant la fonction).  Devrait être Chrono Trigger.
-	afficherJeu(*lj.elements[0]);
+	//afficherJeu(*lj.elements[0]);
 	cout << ligneSeparation << endl;
 
 	//TODO: Appel à votre fonction d'affichage de votre liste de jeux.
-	afficherListeJeux(lj);
+	//afficherListeJeux(lj);
 	
 	//TODO: Faire les appels à toutes vos fonctions/méthodes pour voir qu'elles fonctionnent et avoir 0% de lignes non exécutées dans le programme (aucune ligne rouge dans la couverture de code; c'est normal que les lignes de "new" et "delete" soient jaunes).  Vous avez aussi le droit d'effacer les lignes du programmes qui ne sont pas exécutée, si finalement vous pensez qu'elle ne sont pas utiles.
 
 
 
 	//TODO: Détruire tout avant de terminer le programme.  Devrait afficher "Aucune fuite detectee." a la sortie du programme; il affichera "Fuite detectee:" avec la liste des blocs, s'il manque des delete.
-	detruireListeJeux(lj);
+	//detruireListeJeux(lj);
 
 	// Kamil: section de tests pour Liste.hpp
-	//Liste<int> listeInt;
-	//auto ptrInt = make_unique<int>(1);
-	//listeInt.ajouter(ptrInt);
+	Liste<int> listeInt;
+	shared_ptr ptrInt = make_shared<int>(1);
+	shared_ptr ptrInt2 = make_shared<int>(2);
+	shared_ptr ptrInt3 = make_shared<int>(3);
+	shared_ptr ptrInt4 = make_shared<int>(4);
 
+	listeInt.ajouter(ptrInt);
+	listeInt.ajouter(ptrInt2);
+	listeInt.ajouter(ptrInt3);
+	listeInt.ajouter(ptrInt4);
+
+	cout << *listeInt[0] << endl;
+	cout << *listeInt[1] << endl;
+	cout << *listeInt[2] << endl;
+	cout << *listeInt[3] << endl;
+
+
+	Liste<Jeu> listeJeu;
+	shared_ptr ptrJeu = make_shared<Jeu>("Pierre");
+	shared_ptr ptrJeu2 = make_shared<Jeu>("Luc");
+	
+	listeJeu.ajouter(ptrJeu);
+	listeJeu.ajouter(ptrJeu2);
+
+	cout << listeJeu[0]->titre << endl;
+	cout << listeJeu[1]->titre << endl;
+
+	// cout << listeInt; FONCTIONNE PAS ENCORE
 }

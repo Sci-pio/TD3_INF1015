@@ -15,28 +15,36 @@ using namespace iter;
 template<typename T>
 class Liste {
 public:
-	Liste() = default;
-	~Liste();
+	Liste() :
+		nElements_(0),
+		capacite_(0),
+		elements_(make_unique<shared_ptr<T>[]>(capacite_))
+	{};
 
-	void changerCapacite(size_t nouvelleCapacite) {
-		assert(nouvelleCapacite >= nElements_);
-		unique_ptr<T> nouvelleListe = shared_ptr<T>[nouvelleCapacite];
+	~Liste() = default;
 
-		for (size_t i : iter::range(nElements_))
+	void changerCapacite(size_t nouvelleCapacite) 
+	{
+		assert(nouvelleCapacite >= nElements_); //Est ce que la bonne prog. ? Pcq si la condition est respecter ça termine le programme... (LEO)
+		auto nouvelleListe = make_unique<shared_ptr<T>[]>(nouvelleCapacite);
+
+		for (size_t i : range(nElements_))
 			nouvelleListe[i] = elements_[i];
 
-		elements_ = nouvelleListe;
+		elements_ = move(nouvelleListe);
 		capacite_ = nouvelleCapacite;
 	};
 
-	void ajouter(shared_ptr<T> ptrT) {
+	void ajouter(shared_ptr<T> ptrT) 
+	{
 		if (nElements_ == capacite_)
 			changerCapacite(max(size_t(1), capacite_ * 2));
 		elements_[nElements_++] = ptrT;
 	};
 
-	void retirer(const shared_ptr<T> aRetirer) {
-		for (shared_ptr<T>& a : enSpan()) {
+	void retirer(const shared_ptr<T> aRetirer) 
+{
+		for (shared_ptr<T> a : enSpan()) {
 			if (a==aRetirer){
 				if (nElements_ > 1)
 					a = elements_[nElements_ - 1];
@@ -46,13 +54,19 @@ public:
 	};
 
 	span<T*> enSpan() const { return span(elements_, nElements_); };
+	
 
 	shared_ptr<T> operator[] (const int index) const { return elements_[index]; }
 
+	friend ostream& operator<< (ostream& o, const Liste<T>& l);
+
 private:
-	std::size_t nElements_ = 0, capacite_ = 0;
-	unique_ptr<shared_ptr<T>[]> elements_ = make_unique<shared_ptr<T>[]>(capacite_);
+	std::size_t nElements_, capacite_;
+	unique_ptr<shared_ptr<T>[]> elements_;
 };
 
-
-
+template<typename T>
+ostream& operator<< (ostream& o, const Liste<T>& l) {
+	
+	return o << "Test pour linstant";
+}
