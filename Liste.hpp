@@ -53,12 +53,15 @@ public:
 		}
 	};
 
-	span<T*> enSpan() const { return span(elements_, nElements_); };
+	span<shared_ptr<T>> enSpan() const { return span(elements_, nElements_); };
 	
-
 	shared_ptr<T> operator[] (const int index) const { return elements_[index]; }
 
 	friend ostream& operator<< (ostream& o, const Liste<T>& l);
+
+	size_t& getnElements() const { return nElements_; }
+
+	unique_ptr<shared_ptr<T>[]>& getElements() const{ return elements_; }
 
 private:
 	std::size_t nElements_, capacite_;
@@ -70,3 +73,5 @@ ostream& operator<< (ostream& o, const Liste<T>& l) {
 	
 	return o << "Test pour linstant";
 }
+
+
