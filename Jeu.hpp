@@ -1,9 +1,8 @@
 ﻿#pragma once
 #include <string>
-#include "ListeConcepteurs.hpp"
-//#include "Liste.hpp"
+#include "Concepteur.hpp"
+#include "Liste.hpp"
 
-//consignes dit que ils veulent attributs publiques
 struct Jeu
 {
 	std::string titre;
