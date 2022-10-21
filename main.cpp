@@ -274,13 +274,13 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 	//int* fuite = new int;  // Pour vérifier que la détection de fuites fonctionne; un message devrait dire qu'il y a une fuite à cette ligne.
 
 	Liste<Jeu> lj = creerListeJeux("jeux.bin"); //TODO: Appeler correctement votre fonction de création de la liste de jeux.
-	cout << lj.getnElements();
+	cout << "nElements: " << lj.getnElements() << " , capacite: " << lj.getCapacite() << endl;
 	static const string ligneSeparation = "\n\033[35m════════════════════════════════════════\033[0m\n";
 	cout << ligneSeparation << endl;
-	cout << "Premier jeu de la liste :" << endl;
+	/*cout << "Premier jeu de la liste :" << endl;*/
 	//TODO: Afficher le premier jeu de la liste (en utilisant la fonction).  Devrait être Chrono Trigger.
 	//afficherJeu(*lj.elements[0]);
-	cout << ligneSeparation << endl;
+	/*cout << ligneSeparation << endl;*/
 
 	//TODO: Appel à votre fonction d'affichage de votre liste de jeux.
 	//afficherListeJeux(lj);
@@ -315,6 +315,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 	Liste<Jeu> listeJeu;
 	shared_ptr ptrJeu = make_shared<Jeu>("Pierre");
 	shared_ptr ptrJeu2 = make_shared<Jeu>("Luc");
+	auto ptrJeu3 = make_unique<Jeu>("Paul");
 
 	listeJeu.ajouter(ptrJeu);
 	listeJeu.ajouter(ptrJeu2);
@@ -325,6 +326,13 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 
 	cout << listeJeu2[0]->titre << endl;
 	cout << listeJeu2[1]->titre << endl;
+
+	//Tests operator[]
+	cout << lj[2]->titre << endl; // Kamil: wtf ca ne sort rien du tout???
+
+	//Tests methode trouverSi()
+	//int nombre = listeInt.trouverSi([](auto v) {return *v > 1; });
+	//cout << nombre;
 
 	//cout << listeInt; FONTIONNE PAS ENCORE
 }

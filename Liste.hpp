@@ -1,4 +1,4 @@
-// Kamil : ceci est un nouveau fichier, le code ici est entierement ecrit par moi avec des morceaux venant de la correction du TD2
+
 
 #include <iostream>
 #include <fstream>
@@ -6,13 +6,14 @@
 #include <cassert>
 #include "cppitertools/range.hpp"
 #include "gsl/span"
+#include <functional>
 
 using namespace std;
 using namespace gsl;
 using namespace iter;
 
 
-//devrait avoir un unique_ptr elements_ rempli de shared_ptr qui sont des pointeurs vers des jeux
+
 #pragma once
 template<typename T> 
 class Liste {
@@ -61,7 +62,7 @@ public:
 		}
 	}*/
 
-	span<shared_ptr<T>> enSpan() const { return span(elements_, nElements_); };
+	span<shared_ptr<T>> enSpan() const { return gsl::span(elements_, nElements_); };
 
 	shared_ptr<T> operator[] (const int index) const { return elements_[index]; }
 
@@ -78,6 +79,20 @@ public:
 	size_t const getnElements() const { return nElements_; }
 
 	unique_ptr<shared_ptr<T>[]> const getElements() const{ return elements_; }
+
+	size_t const getCapacite() const { return capacite_; }
+
+	//Kamil : fonction qui retourne l'indexe du premier element dans une Liste qui satisfait a un critere, ca marche pas
+	//template <typename PredicatUnaire>
+	//int trouverSi(const PredicatUnaire& critere) {
+	//	int i = 0;
+	//	for (auto&& v : enSpan()) {
+	//		if (critere(v))
+	//			return i;
+	//		i++;
+	//	}
+	//	return -1;
+	//}
 
 private:
 	std::size_t nElements_, capacite_;
