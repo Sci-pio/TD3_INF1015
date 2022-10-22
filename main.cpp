@@ -9,6 +9,7 @@
 #include "Jeu.hpp"
 #include "Concepteur.hpp"
 #include "Liste.hpp"
+#include <string>
 #include "debogage_memoire.hpp"  //NOTE: Incompatible avec le "placement new", ne pas utiliser cette entête si vous utilisez ce type de "new" dans les lignes qui suivent cette inclusion.
 
 using namespace std;
@@ -75,7 +76,7 @@ shared_ptr<Concepteur> trouverConcepteur(const Liste<Jeu>& listeJeux, string nom
 
 shared_ptr<Concepteur> lireConcepteur(istream& fichier, Liste<Jeu>& listeJeux)
 {
-	Concepteur concepteur = {}; // On initialise une structure vide de type Concepteur.
+	Concepteur concepteur = {}; 
 	concepteur.nom = lireString(fichier);
 	concepteur.anneeNaissance = int(lireUintTailleVariable(fichier));
 	concepteur.pays = lireString(fichier);
@@ -87,7 +88,7 @@ shared_ptr<Concepteur> lireConcepteur(istream& fichier, Liste<Jeu>& listeJeux)
 
 	cout << "\033[92m" << "Allocation en mémoire du concepteur " << concepteur.nom
 		<< "\033[0m" << endl;
-	return concepteurPtr; //TODO: Retourner le pointeur vers le concepteur crée.
+	return concepteurPtr; 
 }
 
 //TODO: Fonction qui change la taille du tableau de jeux de ListeJeux.
@@ -143,18 +144,19 @@ shared_ptr<Jeu> lireJeu(istream& fichier, Liste<Jeu>& listeJeux)
 	jeu.titre = lireString(fichier);
 	jeu.anneeSortie = int(lireUintTailleVariable(fichier));
 	jeu.developpeur = lireString(fichier);
+
 	size_t nConcepteur = lireUintTailleVariable(fichier);
 	// Rendu ici, les champs précédents de la structure jeu sont remplis avec la
 	// bonne information.
 
 
-	shared_ptr ptrJeu = make_shared<Jeu>();
+	shared_ptr ptrJeu = make_shared<Jeu>(jeu);
 	cout << "\033[96m" << "Allocation en mémoire du jeu " << jeu.titre
 		<< "\033[0m" << endl;
 
 	for (size_t i : range(nConcepteur)) {
 		shared_ptr<Concepteur> concep = lireConcepteur(fichier, listeJeux);
-		ptrJeu->concepteurs.ajouter(move(concep));
+		ptrJeu->concepteurs.ajouter(concep);
 	}
 
 	return ptrJeu;
@@ -170,7 +172,7 @@ Liste<Jeu> creerListeJeux(const string& nomFichier)
 	for ([[maybe_unused]] size_t n : iter::range(nElements))
 	{
 		shared_ptr<Jeu> ptrJeu = lireJeu(fichier, lj);
-		lj.ajouter(move(ptrJeu));
+		lj.ajouter(ptrJeu);
 	}
 
 	return lj;
@@ -256,10 +258,28 @@ Liste<Jeu> creerListeJeux(const string& nomFichier)
 //	}
 //}
 
+ostream& operator<< (ostream& o, const shared_ptr<Concepteur>& ptrConcepteur) {
+	cout << "\t" << ptrConcepteur->nom << ", " << ptrConcepteur->anneeNaissance << ", " << ptrConcepteur->pays << endl;
+
+	return o;
+}
+
+ostream& operator<< (ostream& o, const shared_ptr<Jeu>& ptrJeu) {
+	static const string ligneSeparation = "\n\033[12m--------------------------------------------------\033[0m\n";
+
+	o << ptrJeu->titre << ", " << ptrJeu->developpeur << ", " << ptrJeu->anneeSortie << endl;
+	o << "Concepteurs: \n";
+	
+	ptrJeu->concepteurs.afficher(o);
+
+	o << ligneSeparation;
+	return o;
+}
+
 template<typename T>
-ostream& operator<< (ostream& o, shared_ptr< Jeu> ptrJeu) {
-	cout << "here";
-	return o << ptrJeu->titre << endl;
+ostream& operator<< (ostream& o, const Liste<T>& l) {
+	l.afficher(o);
+	return o;
 }
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
@@ -305,30 +325,18 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 	listeInt.ajouter(ptrInt3);
 	listeInt.ajouter(ptrInt4);
 
-	cout << *listeInt[0] << endl;
-	cout << *listeInt[1] << endl;
-	cout << *listeInt[2] << endl;
-	cout << *listeInt[3] << endl;
-
-
-
 	Liste<Jeu> listeJeu;
 	shared_ptr ptrJeu = make_shared<Jeu>("Pierre");
 	shared_ptr ptrJeu2 = make_shared<Jeu>("Luc");
-	auto ptrJeu3 = make_unique<Jeu>("Paul");
+
 
 	listeJeu.ajouter(ptrJeu);
 	listeJeu.ajouter(ptrJeu2);
 
-	Liste<Jeu> listeJeu2;
-	listeJeu2 = move(listeJeu);
-
-
-	cout << listeJeu2[0]->titre << endl;
-	cout << listeJeu2[1]->titre << endl;
+	cout << lj;
 
 	//Tests operator[]
-	cout << lj[2]->titre << endl; // Kamil: wtf ca ne sort rien du tout???
+	//cout << lj[2]->titre << endl; // Kamil: wtf ca ne sort rien du tout???
 
 	//Tests methode trouverSi()
 	//int nombre = listeInt.trouverSi([](auto v) {return *v > 1; });

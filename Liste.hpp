@@ -1,5 +1,3 @@
-
-
 #include <iostream>
 #include <fstream>
 #include <cstdint>
@@ -7,6 +5,7 @@
 #include "cppitertools/range.hpp"
 #include "gsl/span"
 #include <functional>
+#include <string>
 
 using namespace std;
 using namespace gsl;
@@ -25,7 +24,7 @@ public:
 		elements_(make_unique<shared_ptr<T>[]>(capacite_))
 	{}
 
-	Liste(Liste<T>&& autre) noexcept
+	Liste(Liste<T>& autre) noexcept
 	{
 		*this = move(autre);
 	}
@@ -66,8 +65,11 @@ public:
 
 	shared_ptr<T> operator[] (const int index) const { return elements_[index]; }
 
-	template<typename U>
-	friend ostream& operator<< (ostream& o, const Liste<U>& l);
+	void afficher(ostream& o) const 
+	{
+		for (size_t i : range(nElements_))
+			o << elements_[i];
+	}
 
 	Liste& operator= (Liste&& autre) noexcept
 	{
@@ -99,11 +101,3 @@ private:
 	unique_ptr<shared_ptr<T>[]> elements_;
 };
 
-template<typename T>
-ostream& operator<< (ostream& o, const Liste<T>& l) {
-
-	for (size_t i : range(l.getnElements()))
-		o << l[i];
-
-	return o;
-}
