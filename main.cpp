@@ -71,6 +71,16 @@ shared_ptr<Concepteur> trouverConcepteur(const Liste<Jeu>& listeJeux, string nom
 		}
 	}
 	return nullptr;
+	
+	// on veut retourner le shared_ptr de Concepteur qui le nom "nom" dans une listeJeux
+	// Jeu::chercherConcepteur() retourne le concepteur qui la le nom "nom" dans un Jeu
+	//shared_ptr<Concepteur> ptrConcepteur;
+	//for (shared_ptr<Jeu> ptrJeu : listeJeux.enSpan()) {
+	//	if (ptrJeu->chercherConcepteur(nom) != nullptr) {
+	//		ptrConcepteur = ptrJeu->chercherConcepteur(nom);
+	//	}
+	//}
+	//return ptrConcepteur;
 }
 
 
@@ -91,52 +101,6 @@ shared_ptr<Concepteur> lireConcepteur(istream& fichier, Liste<Jeu>& listeJeux)
 	return concepteurPtr; 
 }
 
-//TODO: Fonction qui change la taille du tableau de jeux de ListeJeux.
-// Cette fonction doit recevoir en paramètre la nouvelle capacité du nouveau
-// tableau. Il faut allouer un nouveau tableau assez grand, copier ce qu'il y
-// avait dans l'ancien, et éliminer l'ancien trop petit. N'oubliez pas, on copie
-// des pointeurs de jeux. Il n'y a donc aucune nouvelle allocation de jeu ici !
-//void changerTailleListeJeux(ListeJeux& liste, size_t nouvelleCapacite)
-//{
-//	assert(nouvelleCapacite >= liste.nElements); // On ne demande pas de supporter les réductions de nombre d'éléments.
-//	Jeu** nouvelleListeJeux = new Jeu* [nouvelleCapacite];
-//	// Pas nécessaire de tester si liste.elements est nullptr puisque si c'est le cas, nElements est nécessairement 0.
-//	for (size_t i : iter::range(liste.nElements))
-//		nouvelleListeJeux[i] = liste.elements[i];
-//	delete[] liste.elements;
-//
-//	liste.elements = nouvelleListeJeux;
-//	liste.capacite = nouvelleCapacite;
-//}
-
-//TODO: Fonction pour ajouter un Jeu à ListeJeux.
-// Le jeu existant déjà en mémoire, on veut uniquement ajouter le pointeur vers
-// le jeu existant. De plus, en cas de saturation du tableau elements, cette
-// fonction doit doubler la taille du tableau elements de ListeJeux.
-// Utilisez la fonction pour changer la taille du tableau écrite plus haut.
-//void ajouterJeu(ListeJeux& liste, Jeu* jeu)
-//{
-//	if (liste.nElements == liste.capacite)
-//		changerTailleListeJeux(liste, max(size_t(1), liste.capacite * 2));  // En C++23, on peut utiliser 1uz au lieu du cast.
-//	liste.elements[liste.nElements++] = jeu;
-//};
-
-//TODO: Fonction qui enlève un jeu de ListeJeux.
-// Attention, ici il n'a pas de désallocation de mémoire. Elle enlève le
-// pointeur de la ListeJeux, mais le jeu pointé existe encore en mémoire.
-// Puisque l'ordre de la ListeJeux n'a pas être conservé, on peut remplacer le
-// jeu à être retiré par celui présent en fin de liste et décrémenter la taille
-// de celle-ci.
-//void enleverJeu(ListeJeux& liste, const Jeu* jeu)
-//{
-//	for (Jeu*& elem : spanListeJeux(liste)) {
-//		if (elem == jeu) {
-//			if (liste.nElements > 1)
-//				elem = liste.elements[liste.nElements - 1];
-//			liste.nElements--;
-//		}
-//	}
-//};
 
 shared_ptr<Jeu> lireJeu(istream& fichier, Liste<Jeu>& listeJeux)
 {
@@ -177,90 +141,9 @@ Liste<Jeu> creerListeJeux(const string& nomFichier)
 
 	return lj;
 }
-//TODO: Fonction pour détruire un concepteur (libération de mémoire allouée).
-// Lorsqu'on détruit un concepteur, on affiche son nom pour fins de débogage.
-//void detruireConcepteur(Concepteur* concepteur)
-//{
-//	cout << "\033[91m" << "Destruction du concepteur " << concepteur->nom << "\033[0m"
-//			  << endl;
-//	delete[] concepteur->jeuxConcus.elements;
-//	delete concepteur;
-//}
-
-//TODO: Fonction qui détermine si un concepteur participe encore à un jeu.
-//bool encorePresentDansUnJeu(const shared_ptr<Concepteur> concepteur)
-//{
-//	return concepteur->jeuxConcus.nElements != 0;
-//}
-
-//TODO: Fonction pour détruire un jeu (libération de mémoire allouée).
-// Attention, ici il faut relâcher toute les cases mémoires occupées par un jeu.
-// Par conséquent, il va falloir gérer le cas des concepteurs (un jeu contenant
-// une ListeConcepteurs). On doit commencer par enlever le jeu à détruire des jeux
-// qu'un concepteur a participé (jeuxConcus). Si le concepteur n'a plus de
-// jeux présents dans sa liste de jeux participés, il faut le supprimer.  Pour
-// fins de débogage, affichez le nom du jeu lors de sa destruction.
-//void detruireJeu(Jeu* jeu)
-//{
-//	for (Concepteur* c : spanListeConcepteurs(jeu->concepteurs)) {
-//		enleverJeu(c->jeuxConcus, jeu);
-//		if (!encorePresentDansUnJeu(c))
-//			detruireConcepteur(c);
-//	}
-//	cout << "\033[31m" << "Destruction du jeu " << jeu->titre << "\033[0m"
-//			  << endl;
-//	delete[] jeu->concepteurs.elements;
-//	delete jeu;
-//}
-
-//TODO: Fonction pour détruire une ListeJeux et tous ses jeux.
-//void detruireListeJeux(ListeJeux& liste)
-//{
-//	for(Jeu* j : spanListeJeux(liste))
-//		detruireJeu(j);
-//	delete[] liste.elements;
-//}
-
-//void afficherConcepteur(const Concepteur& d)
-//{
-//	cout << "\t" << d.nom << ", " << d.anneeNaissance << ", " << d.pays
-//			  << endl;
-//}
-
-//TODO: Fonction pour afficher les infos d'un jeu ainsi que ses concepteurs.
-// Servez-vous de la fonction afficherConcepteur ci-dessus.
-//void afficherJeu(const Jeu& j)
-//{
-//	cout << "Titre : " << "\033[94m" << j.titre << "\033[0m" << endl;
-//	cout << "Parution : " << "\033[94m" << j.anneeSortie << "\033[0m"
-//			  << endl;
-//	cout << "Développeur :  " << "\033[94m" << j.developpeur << "\033[0m"
-//			  << endl;
-//	cout << "Concepteurs du jeu :" << "\033[94m" << endl;
-//	for(const Concepteur* c : spanListeConcepteurs(j.concepteurs))
-//		afficherConcepteur(*c);
-//	cout << "\033[0m";
-//}
-
-//TODO: Fonction pour afficher tous les jeux de ListeJeux, séparés par un ligne.
-// Servez-vous de la fonction d'affichage d'un jeu crée ci-dessus. Votre ligne
-// de séparation doit être différent de celle utilisée dans le main.
-//void afficherListeJeux(const ListeJeux& listeJeux)
-//{
-//	static const string ligneSeparation = "\n\033[95m"
-//	"══════════════════════════════════════════════════════════════════════════"
-//	"\033[0m\n";
-//	cout << ligneSeparation << endl;
-//	for(const Jeu* j : spanListeJeux(listeJeux))
-//	{
-//		afficherJeu(*j);
-//		cout << ligneSeparation << endl;
-//	}
-//}
 
 ostream& operator<< (ostream& o, const shared_ptr<Concepteur>& ptrConcepteur) {
 	cout << "\t" << ptrConcepteur->nom << ", " << ptrConcepteur->anneeNaissance << ", " << ptrConcepteur->pays << endl;
-
 	return o;
 }
 
@@ -282,6 +165,12 @@ ostream& operator<< (ostream& o, const Liste<T>& l) {
 	return o;
 }
 
+template<typename T>
+span<shared_ptr<T>> enSpan(Liste<T>& l)
+{
+	return span(l.getElements());
+}
+
 int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 {
 #pragma region "Bibliothèque du cours"
@@ -294,9 +183,13 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 	//int* fuite = new int;  // Pour vérifier que la détection de fuites fonctionne; un message devrait dire qu'il y a une fuite à cette ligne.
 
 	Liste<Jeu> lj = creerListeJeux("jeux.bin"); //TODO: Appeler correctement votre fonction de création de la liste de jeux.
-	cout << "nElements: " << lj.getnElements() << " , capacite: " << lj.getCapacite() << endl;
+	cout << "nElements: " << lj.getnElements() << " , capacite: " << lj.getCapacite() << endl; 
 	static const string ligneSeparation = "\n\033[35m════════════════════════════════════════\033[0m\n";
-	cout << ligneSeparation << endl;
+
+	//Test operator<<
+	cout << ligneSeparation << lj << ligneSeparation << endl; 
+	ofstream("sortie.txt") << lj;
+	
 	/*cout << "Premier jeu de la liste :" << endl;*/
 	//TODO: Afficher le premier jeu de la liste (en utilisant la fonction).  Devrait être Chrono Trigger.
 	//afficherJeu(*lj.elements[0]);
@@ -315,9 +208,9 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 	// Kamil: section de tests pour Liste.hpp
 	Liste<int> listeInt;
 	shared_ptr ptrInt = make_shared<int>(1);
-	shared_ptr ptrInt2 = make_shared<int>(2);
-	shared_ptr ptrInt3 = make_shared<int>(3);
-	shared_ptr ptrInt4 = make_shared<int>(4);
+	shared_ptr ptrInt2 = make_shared<int>(3);
+	shared_ptr ptrInt3 = make_shared<int>(5);
+	shared_ptr ptrInt4 = make_shared<int>(8);
 
 	//Tests methode ajouter()
 	listeInt.ajouter(ptrInt);
@@ -333,14 +226,37 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 	listeJeu.ajouter(ptrJeu);
 	listeJeu.ajouter(ptrJeu2);
 
-	cout << lj;
+	
 
 	//Tests operator[]
-	//cout << lj[2]->titre << endl; // Kamil: wtf ca ne sort rien du tout???
-
+	cout << "Titre du jeu a l'indice 2: " << lj[2]->titre << endl; 
+	cout << "Nom de son concepteur a l'indice 1: " << lj[2]->concepteurs[1]->nom << endl;
+	cout << ligneSeparation << endl;
+		 
 	//Tests methode trouverSi()
-	//int nombre = listeInt.trouverSi([](auto v) {return *v > 1; });
-	//cout << nombre;
+	shared_ptr<int> ptrInt5 = listeInt.trouverSi([&](shared_ptr<int> v) {return *v > 6; });
+	cout << *ptrInt5 << endl; // affiche 5
+	cout << ptrInt5.use_count() << endl;
 
-	//cout << listeInt; FONTIONNE PAS ENCORE
+	Liste<int> ListeInt2;
+	ListeInt2.ajouter(ptrInt5);
+	cout << ptrInt5.use_count() << endl;
+
+	//Tests methode Jeu::chercherConcepteur()
+	shared_ptr<Concepteur> a = lj[0]->chercherConcepteur("Yoshinori Kitase");
+	shared_ptr<Concepteur> b = lj[1]->chercherConcepteur("Yoshinori Kitase");
+	if (a == b) { cout << "a et b pointent vers la meme adresse" << endl; } // Kamil: je crois que c'est une bonne maniere de verifier si deux shared_ptr pointent au meme endroit, mais jsuis pas sur
+	else { cout << "a et b ne pointent pas vers la meme adresse" << endl; }
+	cout << "Date de naissance de Yoshinori Kitase: "<<a->anneeNaissance << endl;
+
+	cout << ligneSeparation << endl; 
+
+	//Test de la copie
+	//Jeu copieJeu = *lj[2];
+	//copieJeu.concepteurs[1] = (*lj[0]).concepteurs[3]; //devrait etre remplace par Hironobu Sakaguchi
+	//cout << lj[2] << endl;
+	//cout << make_shared<Jeu>(copieJeu) << endl;
+
+
+	
 }

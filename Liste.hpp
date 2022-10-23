@@ -21,7 +21,7 @@ public:
 	Liste() :
 		nElements_(0),
 		capacite_(0),
-		elements_(make_unique<shared_ptr<T>[]>(capacite_))
+		elements_(make_unique<shared_ptr<T>[]>(capacite_)) 
 	{}
 
 	Liste(Liste<T>& autre) noexcept
@@ -50,18 +50,8 @@ public:
 		elements_[nElements_++] = ptrT;
 	}
 
-	/*void retirer(const shared_ptr<T> aRetirer)
-	{
-		for (shared_ptr<T> a : enSpan()) {
-			if (a == aRetirer) {
-				if (nElements_ > 1)
-					a = elements_[nElements_ - 1];
-				nElements_--;
-			}
-		}
-	}*/
 
-	span<shared_ptr<T>> enSpan() const { return gsl::span(elements_, nElements_); };
+	span<shared_ptr<T>> enSpan() const { return { elements_.get(), nElements_ }; };
 
 	shared_ptr<T> operator[] (const int index) const { return elements_[index]; }
 
@@ -84,20 +74,21 @@ public:
 
 	size_t const getCapacite() const { return capacite_; }
 
-	//Kamil : fonction qui retourne l'indexe du premier element dans une Liste qui satisfait a un critere, ca marche pas
-	//template <typename PredicatUnaire>
-	//int trouverSi(const PredicatUnaire& critere) {
-	//	int i = 0;
-	//	for (auto&& v : enSpan()) {
-	//		if (critere(v))
-	//			return i;
-	//		i++;
-	//	}
-	//	return -1;
-	//}
+	//Kamil : fonction qui retourne le premier element dans une Liste qui satisfait a un critere
+	template <typename PredicatUnaire>
+	shared_ptr<T> trouverSi(const PredicatUnaire& critere) {
+		int i = 0;
+		for (auto&& v : enSpan()) {
+			if (critere(v))
+				return v;
+			i++;
+		}
+		return nullptr;
+	}
 
 private:
 	std::size_t nElements_, capacite_;
 	unique_ptr<shared_ptr<T>[]> elements_;
 };
+
 
