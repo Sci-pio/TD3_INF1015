@@ -71,16 +71,6 @@ shared_ptr<Concepteur> trouverConcepteur(const Liste<Jeu>& listeJeux, string nom
 		}
 	}
 	return nullptr;
-	
-	// on veut retourner le shared_ptr de Concepteur qui le nom "nom" dans une listeJeux
-	// Jeu::chercherConcepteur() retourne le concepteur qui la le nom "nom" dans un Jeu
-	//shared_ptr<Concepteur> ptrConcepteur;
-	//for (shared_ptr<Jeu> ptrJeu : listeJeux.enSpan()) {
-	//	if (ptrJeu->chercherConcepteur(nom) != nullptr) {
-	//		ptrConcepteur = ptrJeu->chercherConcepteur(nom);
-	//	}
-	//}
-	//return ptrConcepteur;
 }
 
 
@@ -110,8 +100,6 @@ shared_ptr<Jeu> lireJeu(istream& fichier, Liste<Jeu>& listeJeux)
 	jeu.developpeur = lireString(fichier);
 
 	size_t nConcepteur = lireUintTailleVariable(fichier);
-	// Rendu ici, les champs précédents de la structure jeu sont remplis avec la
-	// bonne information.
 
 
 	shared_ptr ptrJeu = make_shared<Jeu>(jeu);
@@ -174,89 +162,83 @@ span<shared_ptr<T>> enSpan(Liste<T>& l)
 int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 {
 #pragma region "Bibliothèque du cours"
-	// Permet sous Windows les "ANSI escape code" pour changer de couleur
-	// https://en.wikipedia.org/wiki/ANSI_escape_code ; les consoles Linux/Mac
-	// les supportent normalement par défaut.
 	bibliotheque_cours::activerCouleursAnsi();
 #pragma endregion
-
-	//int* fuite = new int;  // Pour vérifier que la détection de fuites fonctionne; un message devrait dire qu'il y a une fuite à cette ligne.
-
-	Liste<Jeu> lj = creerListeJeux("jeux.bin"); //TODO: Appeler correctement votre fonction de création de la liste de jeux.
-	cout << "nElements: " << lj.getnElements() << " , capacite: " << lj.getCapacite() << endl; 
 	static const string ligneSeparation = "\n\033[35m════════════════════════════════════════\033[0m\n";
 
-	//Test operator<<
+	// CREATION LISTE<JEU> (#1, #2, #3):
+	Liste<Jeu> lj = creerListeJeux("jeux.bin");
+	cout << "nElements: " << lj.getnElements() << " , capacite: " << lj.getCapacite() << endl; 
+	cout << ligneSeparation << endl;
+
+
+	//TEST OPERATOR [] (#4):
+	cout << "Titre du jeu a l'indice 2: " << lj[2]->titre << endl;
+	cout << "Nom de son concepteur a l'indice 1: " << lj[2]->concepteurs[1]->nom << endl;
+	cout << ligneSeparation << endl;
+
+
+	//TEST FONCTION LAMBDA (#5):
+	shared_ptr<Concepteur> a = lj[0]->chercherConcepteur("Yoshinori Kitase");
+	shared_ptr<Concepteur> b = lj[1]->chercherConcepteur("Yoshinori Kitase");
+	
+	if (a == b) { cout << "a et b pointent vers la meme adresse" << endl; } // Kamil: je crois que c'est une bonne maniere de verifier si deux shared_ptr pointent au meme endroit, mais jsuis pas sur
+	else { cout << "a et b ne pointent pas vers la meme adresse" << endl; }
+	cout << "Date de naissance de Yoshinori Kitase: " << a->anneeNaissance << endl;
+
+
+	//TEST OPERATOR << (#6):
 	cout << ligneSeparation << lj << ligneSeparation << endl; 
 	ofstream("sortie.txt") << lj;
-	
-	/*cout << "Premier jeu de la liste :" << endl;*/
-	//TODO: Afficher le premier jeu de la liste (en utilisant la fonction).  Devrait être Chrono Trigger.
-	//afficherJeu(*lj.elements[0]);
-	/*cout << ligneSeparation << endl;*/
+	cout << ligneSeparation << endl;
 
-	//TODO: Appel à votre fonction d'affichage de votre liste de jeux.
-	//afficherListeJeux(lj);
+
+	//TEST DE LA COPIE (#7):
+	cout << "Jeu original: \n\n" << lj[2] << endl;
+	Jeu copieJeu = *lj[2];
+	copieJeu.concepteurs[1] = lj[0]->concepteurs[1];
+	cout << "Jeu original: \n\n" << lj[2] << endl;
+	cout << "Copie du jeu: \n\n" << make_shared<Jeu>(copieJeu) << endl;
+
+
+	// Kamil: section de tests pour Liste.hpp
+	//Liste<int> listeInt;
+	//shared_ptr ptrInt = make_shared<int>(1);
+	//shared_ptr ptrInt2 = make_shared<int>(3);
+	//shared_ptr ptrInt3 = make_shared<int>(5);
+	//shared_ptr ptrInt4 = make_shared<int>(8);
+
+	////Tests methode ajouter()
+	//listeInt.ajouter(ptrInt);
+	//listeInt.ajouter(ptrInt2);
+	//listeInt.ajouter(ptrInt3);
+	//listeInt.ajouter(ptrInt4);
+
+	//Liste<Jeu> listeJeu;
+	//shared_ptr ptrJeu = make_shared<Jeu>("Pierre");
+	//shared_ptr ptrJeu2 = make_shared<Jeu>("Luc");
+
+
+	//listeJeu.ajouter(ptrJeu);
+	//listeJeu.ajouter(ptrJeu2);
+
+	//
+
+	//
+	//	 
+	////Tests methode trouverSi()
+	//shared_ptr<int> ptrInt5 = listeInt.trouverSi([&](shared_ptr<int> v) {return *v > 6; });
+	//cout << *ptrInt5 << endl; // affiche 5
+	//cout << ptrInt5.use_count() << endl;
+
+	//Liste<int> ListeInt2;
+	//ListeInt2.ajouter(ptrInt5);
+	//cout << ptrInt5.use_count() << endl;
+
+	
+	
+	
 
 	//TODO: Faire les appels à toutes vos fonctions/méthodes pour voir qu'elles fonctionnent et avoir 0% de lignes non exécutées dans le programme (aucune ligne rouge dans la couverture de code; c'est normal que les lignes de "new" et "delete" soient jaunes).  Vous avez aussi le droit d'effacer les lignes du programmes qui ne sont pas exécutée, si finalement vous pensez qu'elle ne sont pas utiles.
 
-
-
-	//TODO: Détruire tout avant de terminer le programme.  Devrait afficher "Aucune fuite detectee." a la sortie du programme; il affichera "Fuite detectee:" avec la liste des blocs, s'il manque des delete.
-	//detruireListeJeux(lj);
-
-	// Kamil: section de tests pour Liste.hpp
-	Liste<int> listeInt;
-	shared_ptr ptrInt = make_shared<int>(1);
-	shared_ptr ptrInt2 = make_shared<int>(3);
-	shared_ptr ptrInt3 = make_shared<int>(5);
-	shared_ptr ptrInt4 = make_shared<int>(8);
-
-	//Tests methode ajouter()
-	listeInt.ajouter(ptrInt);
-	listeInt.ajouter(ptrInt2);
-	listeInt.ajouter(ptrInt3);
-	listeInt.ajouter(ptrInt4);
-
-	Liste<Jeu> listeJeu;
-	shared_ptr ptrJeu = make_shared<Jeu>("Pierre");
-	shared_ptr ptrJeu2 = make_shared<Jeu>("Luc");
-
-
-	listeJeu.ajouter(ptrJeu);
-	listeJeu.ajouter(ptrJeu2);
-
-	
-
-	//Tests operator[]
-	cout << "Titre du jeu a l'indice 2: " << lj[2]->titre << endl; 
-	cout << "Nom de son concepteur a l'indice 1: " << lj[2]->concepteurs[1]->nom << endl;
-	cout << ligneSeparation << endl;
-		 
-	//Tests methode trouverSi()
-	shared_ptr<int> ptrInt5 = listeInt.trouverSi([&](shared_ptr<int> v) {return *v > 6; });
-	cout << *ptrInt5 << endl; // affiche 5
-	cout << ptrInt5.use_count() << endl;
-
-	Liste<int> ListeInt2;
-	ListeInt2.ajouter(ptrInt5);
-	cout << ptrInt5.use_count() << endl;
-
-	//Tests methode Jeu::chercherConcepteur()
-	shared_ptr<Concepteur> a = lj[0]->chercherConcepteur("Yoshinori Kitase");
-	shared_ptr<Concepteur> b = lj[1]->chercherConcepteur("Yoshinori Kitase");
-	if (a == b) { cout << "a et b pointent vers la meme adresse" << endl; } // Kamil: je crois que c'est une bonne maniere de verifier si deux shared_ptr pointent au meme endroit, mais jsuis pas sur
-	else { cout << "a et b ne pointent pas vers la meme adresse" << endl; }
-	cout << "Date de naissance de Yoshinori Kitase: "<<a->anneeNaissance << endl;
-
-	cout << ligneSeparation << endl; 
-
-	//Test de la copie
-	//Jeu copieJeu = *lj[2];
-	//copieJeu.concepteurs[1] = (*lj[0]).concepteurs[3]; //devrait etre remplace par Hironobu Sakaguchi
-	//cout << lj[2] << endl;
-	//cout << make_shared<Jeu>(copieJeu) << endl;
-
-
-	
 }

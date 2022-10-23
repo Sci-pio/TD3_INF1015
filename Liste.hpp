@@ -14,19 +14,19 @@ using namespace iter;
 
 
 #pragma once
-template<typename T> 
+template<typename T>
 class Liste {
 public:
 
 	Liste() :
 		nElements_(0),
 		capacite_(0),
-		elements_(make_unique<shared_ptr<T>[]>(capacite_)) 
+		elements_(make_unique<shared_ptr<T>[]>(capacite_))
 	{}
 
-	Liste(Liste<T>& autre) noexcept
+	Liste(Liste<T>& autre)
 	{
-		*this = move(autre);
+		*this = autre;
 	}
 
 	~Liste() = default;
@@ -55,22 +55,29 @@ public:
 
 	shared_ptr<T> operator[] (const int index) const { return elements_[index]; }
 
-	void afficher(ostream& o) const 
+	void afficher(ostream& o) const
 	{
 		for (size_t i : range(nElements_))
 			o << elements_[i];
 	}
 
-	Liste& operator= (Liste&& autre) noexcept
+	Liste& operator= (const Liste<T>& autre)
 	{
-		elements_ = move(autre.elements_); capacite_ = autre.capacite_; nElements_ = autre.nElements_;
-		autre.elements_ = nullptr;
+		if (this != &autre) {
+			nElements_ = autre.nElements_; capacite_ = autre.capacite_;
+			elements_ = make_unique<shared_ptr<T>[]>(capacite_);
+
+			for (size_t i : range(nElements_)) {
+				elements_[i] = make_shared<T>();
+				*elements_[i] = *autre[i];
+			}
+		}
 		return *this;
 	}
 
 	size_t const getnElements() const { return nElements_; }
 
-	unique_ptr<shared_ptr<T>[]> const getElements() const{ return elements_; }
+	shared_ptr<T> getElementPourModifier(const size_t i) { return elements_[i]; }
 
 	size_t const getCapacite() const { return capacite_; }
 
@@ -90,5 +97,3 @@ private:
 	std::size_t nElements_, capacite_;
 	unique_ptr<shared_ptr<T>[]> elements_;
 };
-
-
