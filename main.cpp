@@ -45,24 +45,17 @@ string lireString(istream& fichier)
 	fichier.read((char*)&texte[0], streamsize(sizeof(texte[0])) * texte.length());
 	return texte;
 }
-//gsl::span<Jeu*> spanListeJeux(const Liste<Jeu>& liste)
-//{
-//	return gsl::span(liste.getElements().get(), liste.getnElements());
-//}
-//gsl::span<Concepteur*> spanListeConcepteurs(const ListeConcepteurs& liste)
-//{
-//	return gsl::span(liste.elements, liste.nElements);
-//}
 #pragma endregion
 
-
+//Retourne le shared_ptr<Concepteur> dans la listeJeux qui a le nom "nom". If none found, return nullptr.
+//Jeu::chercherConcepteur(const string& nomConcepteur) retourne le shared_ptr<Concepteur> d'un Jeu qui le nom "nomConcepteur"
 shared_ptr<Concepteur> trouverConcepteur(const Liste<Jeu>& listeJeux, string nom)
 {
 	//FAUDRAIT METTRE CA AVEC DES SPAN PT: EN CE MOMENT C'EST PAS TRÈS CLEAN (LEO)
-	for (size_t i : range(listeJeux.getnElements())) {
+	for (int i : range(listeJeux.getnElements())) {
 		shared_ptr<Jeu> jeuPtr = listeJeux[i];
 
-		for (size_t j : range(jeuPtr->concepteurs.getnElements())) {
+		for (int j : range(jeuPtr->concepteurs.getnElements())) {
 			shared_ptr concepteurPtr = jeuPtr->concepteurs[j];
 
 			if (concepteurPtr->nom == nom) {
@@ -71,6 +64,15 @@ shared_ptr<Concepteur> trouverConcepteur(const Liste<Jeu>& listeJeux, string nom
 		}
 	}
 	return nullptr;
+	//shared_ptr<Concepteur> ptrConcepteur = nullptr;
+	//while (ptrConcepteur == nullptr) {
+	//	for (shared_ptr<Jeu> ptrJeu : listeJeux.enSpan()) {
+	//		if ((*ptrJeu).chercherConcepteur(nom) != nullptr){
+	//			ptrConcepteur = (*ptrJeu).chercherConcepteur(nom);
+	//		}
+	//	}
+	//}
+	//return ptrConcepteur;
 }
 
 
@@ -182,10 +184,9 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 	shared_ptr<Concepteur> a = lj[0]->chercherConcepteur("Yoshinori Kitase");
 	shared_ptr<Concepteur> b = lj[1]->chercherConcepteur("Yoshinori Kitase");
 	
-	if (a == b) { cout << "a et b pointent vers la meme adresse" << endl; } // Kamil: je crois que c'est une bonne maniere de verifier si deux shared_ptr pointent au meme endroit, mais jsuis pas sur
+	if (a.get() == b.get()) { cout << "a et b pointent vers la meme adresse" << endl; } 
 	else { cout << "a et b ne pointent pas vers la meme adresse" << endl; }
 	cout << "Date de naissance de Yoshinori Kitase: " << a->anneeNaissance << endl;
-
 
 	//TEST OPERATOR << (#6):
 	cout << ligneSeparation << lj << ligneSeparation << endl; 
@@ -197,8 +198,10 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 	cout << "Jeu original: \n\n" << lj[2] << endl;
 	Jeu copieJeu = *lj[2];
 	copieJeu.concepteurs[1] = lj[0]->concepteurs[1];
-	cout << "Jeu original: \n\n" << lj[2] << endl;
-	cout << "Copie du jeu: \n\n" << make_shared<Jeu>(copieJeu) << endl;
+	cout << "Copie du jeu, avec concepteurs differents: \n\n" << make_shared<Jeu>(copieJeu) << endl;
+	if (copieJeu.concepteurs[0].get() == lj[2]->concepteurs[0].get()) { cout << "L'adresse du premier concepteur dans les deux jeux est la meme" << endl; }
+	else { cout << "L'adresse du premier concepteur dans les deux jeux n'est pas la meme" << endl; }
+	cout << ligneSeparation << endl;
 
 
 	// Kamil: section de tests pour Liste.hpp
