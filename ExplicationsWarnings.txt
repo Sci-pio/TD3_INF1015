@@ -1,0 +1,4 @@
+Explication des warnings:
+Ligne 112 de main.cpp: la variable i n'est pas référencée ou utilisée dans des calculs. Ce n'est pas grave, car ici elle sert seulement de compteur 
+d'itérations pour s'assurer qu'on ajoute le bon nombre de shared_ptr<Concepteur> aux concepteurs du jeu. 
+

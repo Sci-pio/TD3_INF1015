@@ -47,15 +47,16 @@ string lireString(istream& fichier)
 }
 #pragma endregion
 
+//Kamil: jsp jsuis vrm cave, quand je uncomment le morceau de code que j'ai fait l'execution cree juste le premier jeu dans la listeJeux et arrete la
 //Retourne le shared_ptr<Concepteur> dans la listeJeux qui a le nom "nom". If none found, return nullptr.
 //Jeu::chercherConcepteur(const string& nomConcepteur) retourne le shared_ptr<Concepteur> d'un Jeu qui le nom "nomConcepteur"
-shared_ptr<Concepteur> trouverConcepteur(const Liste<Jeu>& listeJeux, string nom)
+shared_ptr<Concepteur> trouverConcepteur(const Liste<Jeu>& listeJeux, const string& nom)
 {
 	//FAUDRAIT METTRE CA AVEC DES SPAN PT: EN CE MOMENT C'EST PAS TRÈS CLEAN (LEO)
-	for (int i : range(listeJeux.getnElements())) {
+	for (size_t i : range(listeJeux.getnElements())) {
 		shared_ptr<Jeu> jeuPtr = listeJeux[i];
 
-		for (int j : range(jeuPtr->concepteurs.getnElements())) {
+		for (size_t j : range(jeuPtr->concepteurs.getnElements())) {
 			shared_ptr concepteurPtr = jeuPtr->concepteurs[j];
 
 			if (concepteurPtr->nom == nom) {
@@ -64,12 +65,12 @@ shared_ptr<Concepteur> trouverConcepteur(const Liste<Jeu>& listeJeux, string nom
 		}
 	}
 	return nullptr;
-	//shared_ptr<Concepteur> ptrConcepteur = nullptr;
-	//while (ptrConcepteur == nullptr) {
+	//shared_ptr<Concepteur> ptrConcepteur;
+	//bool concepteurTrouve = false;
+	//while (concepteurTrouve == false) {
 	//	for (shared_ptr<Jeu> ptrJeu : listeJeux.enSpan()) {
-	//		if ((*ptrJeu).chercherConcepteur(nom) != nullptr){
-	//			ptrConcepteur = (*ptrJeu).chercherConcepteur(nom);
-	//		}
+	//		ptrConcepteur = ptrJeu->chercherConcepteur(nom);
+	//		if (ptrConcepteur != nullptr) { concepteurTrouve = true; }
 	//	}
 	//}
 	//return ptrConcepteur;
@@ -184,8 +185,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 	shared_ptr<Concepteur> a = lj[0]->chercherConcepteur("Yoshinori Kitase");
 	shared_ptr<Concepteur> b = lj[1]->chercherConcepteur("Yoshinori Kitase");
 	
-	if (a.get() == b.get()) { cout << "a et b pointent vers la meme adresse" << endl; } 
-	else { cout << "a et b ne pointent pas vers la meme adresse" << endl; }
+	if (a.get() == b.get()) { cout << "a et b pointent vers la meme adresse: " << a.get() << " == " << b.get() << endl; }
+	else { cout << "a et b ne pointent pas vers la meme adresse: " << a.get() << " != " << b.get() << endl; }
 	cout << "Date de naissance de Yoshinori Kitase: " << a->anneeNaissance << endl;
 
 	//TEST OPERATOR << (#6):
@@ -199,49 +200,11 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 	Jeu copieJeu = *lj[2];
 	copieJeu.concepteurs[1] = lj[0]->concepteurs[1];
 	cout << "Copie du jeu, avec concepteurs differents: \n\n" << make_shared<Jeu>(copieJeu) << endl;
-	if (copieJeu.concepteurs[0].get() == lj[2]->concepteurs[0].get()) { cout << "L'adresse du premier concepteur dans les deux jeux est la meme" << endl; }
-	else { cout << "L'adresse du premier concepteur dans les deux jeux n'est pas la meme" << endl; }
+	if (copieJeu.concepteurs[0].get() == lj[2]->concepteurs[0].get()) { cout << "L'adresse du premier concepteur dans les deux jeux est la meme : " << copieJeu.concepteurs[0].get() << " == " << lj[2]->concepteurs[0].get() << endl; }
+	else { cout << "L'adresse du premier concepteur dans les deux jeux n'est pas la meme: " << copieJeu.concepteurs[0].get() << " != " << lj[2]->concepteurs[0].get() << endl; }
 	cout << ligneSeparation << endl;
 
-
-	// Kamil: section de tests pour Liste.hpp
-	//Liste<int> listeInt;
-	//shared_ptr ptrInt = make_shared<int>(1);
-	//shared_ptr ptrInt2 = make_shared<int>(3);
-	//shared_ptr ptrInt3 = make_shared<int>(5);
-	//shared_ptr ptrInt4 = make_shared<int>(8);
-
-	////Tests methode ajouter()
-	//listeInt.ajouter(ptrInt);
-	//listeInt.ajouter(ptrInt2);
-	//listeInt.ajouter(ptrInt3);
-	//listeInt.ajouter(ptrInt4);
-
-	//Liste<Jeu> listeJeu;
-	//shared_ptr ptrJeu = make_shared<Jeu>("Pierre");
-	//shared_ptr ptrJeu2 = make_shared<Jeu>("Luc");
-
-
-	//listeJeu.ajouter(ptrJeu);
-	//listeJeu.ajouter(ptrJeu2);
-
-	//
-
-	//
-	//	 
-	////Tests methode trouverSi()
-	//shared_ptr<int> ptrInt5 = listeInt.trouverSi([&](shared_ptr<int> v) {return *v > 6; });
-	//cout << *ptrInt5 << endl; // affiche 5
-	//cout << ptrInt5.use_count() << endl;
-
-	//Liste<int> ListeInt2;
-	//ListeInt2.ajouter(ptrInt5);
-	//cout << ptrInt5.use_count() << endl;
-
 	
-	
-	
-
 	//TODO: Faire les appels à toutes vos fonctions/méthodes pour voir qu'elles fonctionnent et avoir 0% de lignes non exécutées dans le programme (aucune ligne rouge dans la couverture de code; c'est normal que les lignes de "new" et "delete" soient jaunes).  Vous avez aussi le droit d'effacer les lignes du programmes qui ne sont pas exécutée, si finalement vous pensez qu'elle ne sont pas utiles.
 
 }

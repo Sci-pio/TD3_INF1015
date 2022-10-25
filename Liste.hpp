@@ -37,14 +37,14 @@ public:
 
 	span<shared_ptr<T>> enSpan() const { return { elements_.get(), nElements_ }; };
 
-
-
 	void afficher(ostream& o) const
 	{
 		for (size_t i : range(nElements_)) { o << elements_[i]; }
 	}
 
 	shared_ptr<T>& operator[] (const int index) const { return elements_[index]; }
+
+	shared_ptr<T>& operator[] (const size_t index) const { return elements_[int(index)]; } // Pour eliminer des warnings de conversions de size_t a int
 
 	Liste& operator= (const Liste<T>& autre)
 	{
@@ -61,8 +61,6 @@ public:
 
 	size_t const getnElements() const { return nElements_; }
 
-	//shared_ptr<T> getElementPourModifier(const size_t i) { return elements_[i]; } //Kamil: je la comment out parce que non utilisee (couverture de code)
-
 	size_t const getCapacite() const { return capacite_; }
 
 	template <typename PredicatUnaire>
@@ -77,7 +75,7 @@ private:
 template<typename T>
 void  Liste<T>::changerCapacite(const size_t nouvelleCapacite)
 {
-	assert(nouvelleCapacite >= nElements_); //Est ce que la bonne prog. ? Pcq si la condition est respecter ça termine le programme... (LEO)
+	assert(nouvelleCapacite >= nElements_); 
 	auto nouvelleListe = make_unique<shared_ptr<T>[]>(nouvelleCapacite);
 
 	for (size_t i : range(nElements_))
