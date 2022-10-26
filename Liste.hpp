@@ -1,3 +1,9 @@
+// Auteurs: Leonard Pouliot (2150965) et Kamil Maarite (2152653)
+// Date: 25 octobre 2022
+// cours: INF1015
+// Nom de la classe: Liste.hpp
+
+#pragma once
 #include <iostream>
 #include <fstream>
 #include <cstdint>
@@ -12,12 +18,9 @@ using namespace gsl;
 using namespace iter;
 
 
-
-#pragma once
 template<typename T>
 class Liste {
 public:
-
 	Liste() :
 		nElements_(0),
 		capacite_(0),
@@ -76,7 +79,7 @@ template<typename T>
 void  Liste<T>::changerCapacite(const size_t nouvelleCapacite)
 {
 	assert(nouvelleCapacite >= nElements_); 
-	auto nouvelleListe = make_unique<shared_ptr<T>[]>(nouvelleCapacite);
+	unique_ptr<shared_ptr<T>[]> nouvelleListe = make_unique<shared_ptr<T>[]>(nouvelleCapacite);
 
 	for (size_t i : range(nElements_))
 		nouvelleListe[i] = elements_[i];
@@ -85,6 +88,7 @@ void  Liste<T>::changerCapacite(const size_t nouvelleCapacite)
 	capacite_ = nouvelleCapacite;
 }
 
+
 template<typename T>
 void Liste<T>::ajouter(const shared_ptr<T> ptrT)
 {
@@ -92,6 +96,7 @@ void Liste<T>::ajouter(const shared_ptr<T> ptrT)
 		changerCapacite(max(size_t(1), capacite_ * 2));
 	elements_[nElements_++] = ptrT;
 }
+
 
 template <typename T>
 template <typename PredicatUnaire>
